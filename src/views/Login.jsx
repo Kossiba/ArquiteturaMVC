@@ -1,0 +1,55 @@
+import React, { useState } from 'react';
+import './Login.css';
+import { authenticateUser } from '../controllers/controllerUser.js'
+
+export default function Login() {
+  const [login, setLogin] = useState('');
+  const [senha, setSenha] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError('')
+    try {
+      const user = await authenticateUser({ login, senha })
+      if (user) {
+        console.log('Autenticado:', user)
+      } else {
+        setError('Login ou senha incorretos.')
+      }
+    } catch (err) {
+      console.error('Erro na autenticação:', err.message)
+      setError(err.message)
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Login</h2>
+
+        <label htmlFor="login">Usuário</label>
+        <input
+          id="login"
+          type="text"
+          value={login}
+          onChange={e => setLogin(e.target.value)}
+          required
+        />
+
+        <label htmlFor="senha">Senha</label>
+        <input
+          id="senha"
+          type="password"
+          value={senha}
+          onChange={e => setSenha(e.target.value)}
+          required
+        />
+
+        {error && <p className="error">{error}</p>}
+        
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+  );
+}
