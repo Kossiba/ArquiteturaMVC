@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import { authenticateUser } from '../controllers/controllerUser.js'
 
@@ -6,6 +7,7 @@ export default function Login() {
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -14,6 +16,7 @@ export default function Login() {
       const user = await authenticateUser({ login, senha })
       if (user) {
         console.log('Autenticado:', user)
+        navigate('/produtos');
       } else {
         setError('Login ou senha incorretos.')
       }
@@ -26,7 +29,7 @@ export default function Login() {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Entrar</h2>
 
         <label htmlFor="login">Usuário</label>
         <input
