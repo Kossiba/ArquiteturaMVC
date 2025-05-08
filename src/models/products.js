@@ -10,6 +10,5 @@ export function createProduct({ name = '', price = 0, imageUrl = '' } = {}) {
       name:     String(name),
       price:    Number(price),
       imageUrl: String(imageUrl),
-      createdAt: new Date().toISOString()
     };
   }
