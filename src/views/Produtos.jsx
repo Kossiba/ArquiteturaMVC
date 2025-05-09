@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link }          from 'react-router-dom';
 import { listProducts }  from '../controllers/productController.js';
-import CartIcon          from '../components/CartIcon';
+import CartIcon          from '../components/CartIcon.jxs';
 import './Produtos.css';
 
 export default function Produtos() {
