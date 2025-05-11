@@ -1,21 +1,31 @@
 // src/views/ProdutoDetalhe.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getProductById } from '../controllers/productController.js';
-import { addToCart } from '../controllers/cartController.js';
+import { addToCart, getCartItems, removeFromCart } from '../controllers/cartController.js';
 import './ProdutoDetalhe.css';
 
 export default function ProdutoDetalhe() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [prod, setProd] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [cartItemId, setCartItemId] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await getProductById(id);
-        setProd(data);
+        // Busca produto e itens do carrinho simultaneamente
+        const productData = await getProductById(id);
+        const userId = localStorage.getItem('userId');
+        let items = [];
+        if (userId) items = await getCartItems(userId);
+
+        setProd(productData);
+        // Verifica se já existe item de carrinho para este produto
+        const found = items.find(item => item.productId === id);
+        setCartItemId(found ? found.id : null);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -23,23 +33,28 @@ export default function ProdutoDetalhe() {
       }
     })();
   }, [id]);
-  const handleAddToCart = async () => {
+
+  const handleAddOrRemove = async () => {
     const userId = localStorage.getItem('userId');
     if (!userId) {
-      alert('Você precisa estar logado para adicionar ao carrinho.');
+      alert('Faça login para atualizar o carrinho.');
       return;
     }
     try {
-      await addToCart({ userId, productId: id });
-      alert('Produto adicionado ao carrinho com sucesso!');
+      if (cartItemId) {
+        await removeFromCart(cartItemId);
+      } else {
+        await addToCart({ userId, productId: id });
+      }
+      navigate('/cart');
     } catch (err) {
-      console.error('Erro ao adicionar ao carrinho:', err);
-      alert('Não foi possível adicionar o produto ao carrinho.');
+      console.error('Erro ao atualizar o carrinho:', err);
+      alert('Não foi possível atualizar o carrinho.');
     }
   };
 
   if (loading) return <p>Carregando produto…</p>;
-  if (error) return <p className="error">{error}</p>;
+  if (error)   return <p className="error">{error}</p>;
 
   return (
     <div className="detalhe-page">
@@ -52,8 +67,8 @@ export default function ProdutoDetalhe() {
           <p className="detalhe-date">
             Criado em: {new Date(prod.createdAt).toLocaleString()}
           </p>
-          <button onClick={handleAddToCart} className="btn-add-cart">
-            Adicionar ao carrinho
+          <button onClick={handleAddOrRemove} className="btn-add-cart">
+            {cartItemId ? 'Remover do carrinho' : 'Adicionar ao carrinho'}
           </button>
         </div>
       </div>
