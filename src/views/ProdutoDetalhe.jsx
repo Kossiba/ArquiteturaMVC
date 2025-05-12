@@ -64,9 +64,6 @@ export default function ProdutoDetalhe() {
         <div className="detalhe-info">
           <h2>{prod.name}</h2>
           <p className="detalhe-preco">R$ {Number(prod.price).toFixed(2)}</p>
-          <p className="detalhe-date">
-            Criado em: {new Date(prod.createdAt).toLocaleString()}
-          </p>
           <button onClick={handleAddOrRemove} className="btn-add-cart">
             {cartItemId ? 'Remover do carrinho' : 'Adicionar ao carrinho'}
           </button>
