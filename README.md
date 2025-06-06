@@ -15,7 +15,7 @@ Este projeto é uma aplicação web de loja virtual utilizando arquitetura MVC c
 
 ### 1. Clone o repositório
 ```bash
-git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+git clone https://github.com/Kossiba/ArquiteturaMVC.git
 cd SEU_REPOSITORIO
 ```
 
